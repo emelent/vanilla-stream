@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" href="./tachyons.min.css">
+	<script src="./Bacon.js"></script>
+	<style>
+		.ma-auto{margin:auto;}
+		.todo-list{
+			height: 50vh;
+			min-height: 250px;
+			max-height: 400px;
+			overflow: scroll;
+		}
+	</style>
+</head>
+<body class="avenir">
+	<div class="absolute left-0 right-0 ma-auto w-80 pa2 tc">
+		<div class="pv4 f2">Worst Movie Search</div>
+		<input class="w-80 mh2 pa2 avenir bw1 b--solid b--light-gray" placeholder="Search movies by name or actor" id="item-text" type="text">
+		<img id="spinner" class="fr o-0" src="./spinner.svg" width="40"alt="">
+		<div class="ma2 w-100 mt5 todo-list pa0 bw1 b--solid b--black br1  pa2 tl">
+			<div class=" f3 tl">Here are your movies</div>
+			<ul class="" id="movie-list">
+			</ul>
+		</div>
+	</div>
+	<script>
+		//le fake jquery
+		function $(query){
+			const results = document.querySelectorAll(query)
+			return (results.length > 1)? results:results[0]
+		}
+
+		function renderList(items){
+			const ul = $('#movie-list')
+			ul.innerHTML = ''
+			items.forEach(({title, id}) => {
+				const li = document.createElement('li')
+				li.className = 'ma2 pa2 pointer hover-bg-light-blue'
+				li.innerHTML = `${title}`
+				li.dataset.id = id
+				ul.appendChild(li)			
+			})
+		}
+
+		function searchMovies(movies, text){
+			text = text.toLowerCase()
+			let results =  movies.filter(m => {
+				if(m.title.toLowerCase().startsWith(text))
+					return true
+				for(let actor of m.actors){
+					if(actor.toLowerCase().startsWith(text))
+						return true
+				}
+				return false
+			})
+			results = (results.length > 0)?  results:  [{title: 'No  results...', id: 0}]
+			return results 
+		}
+
+		const showSpinner = () => $('#spinner').classList.remove('o-0')
+		const hideSpinner = () => $('#spinner').classList.add('o-0')
+		const clearTextInput = () => $('#item-text').value = ''
+		const nonEmpty = x => x.length > 0
+		const getText = () => $('#item-text').value
+	</script>
+	<script src="./movies-bacon.js"></script>
+</body>
+</html>
