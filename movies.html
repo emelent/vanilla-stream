@@ -7,26 +7,52 @@
 	<script src="./Bacon.js"></script>
 	<style>
 		.ma-auto{margin:auto;}
-		.todo-list{
-			height: 50vh;
+		.movie-list{
+			height: 70vh;
 			min-height: 250px;
 			max-height: 400px;
-			overflow: scroll;
 		}
 	</style>
 </head>
 <body class="avenir">
 	<div class="absolute left-0 right-0 ma-auto w-80 pa2 tc">
 		<div class="pv4 f2">Worst Movie Search</div>
-		<input class="w-80 mh2 pa2 avenir bw1 b--solid b--light-gray" placeholder="Search movies by name or actor" id="item-text" type="text">
+		<input class="w-80 mh2 pa2 avenir bw1 b--solid b--light-gray" placeholder="Search movies by name or actor" id="search-text" type="text">
 		<img id="spinner" class="fr o-0" src="./spinner.svg" width="40"alt="">
-		<div class="ma2 w-100 mt5 todo-list pa0 bw1 b--solid b--black br1  pa2 tl">
-			<div class=" f3 tl">Here are your movies</div>
-			<ul class="" id="movie-list">
-			</ul>
+		<div class="ma2 w-100 mt5 movie-list pa2 tl">
+			<div id="list-container">
+				<div class=" f3 tl">Here are your movies</div>
+				<ul class="list" id="movie-list">
+				</ul>
+			</div>
+			<div id="movie-container" class="dn">
+				<div id="movie-title" class="f2 mv3">The Godfather</div>
+				<img id="movie-poster" 
+					class="w-50 fl"
+					src="https://images-na.ssl-images-amazon.com/images/M/MV5BZTRmNjQ1ZDYtNDgzMy00OGE0LWE4N2YtNTkzNWQ5ZDhlNGJmL2ltYWdlL2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SY500_CR0,0,352,500_AL_.jpg" 
+					alt="Movie Poster"
+				>
+				<div class="pl3 w-40 fl">
+					<div class="f4 mb2">Cast</div>
+					<div id="movie-cast">Marucho, Isaac, Storm</div>
+					<div class="f4 mt3 mb2">Imdb Rating</div>
+					<div id="movie-rating">8/10</div>
+					<div class="f4 mt3 mb2">Genre</div>
+					<div id="movie-genres">Crime</div>
+					<div class="f4 mt3 mb2">Year</div>
+					<div id="movie-year">1994</div>
+
+					<button class="pointer black ma3 pa2 ph4 bg-light-blue bw1 b--solid b--transparent"  
+						id="back-button">Back</button>					
+				</div>
+			</div>
 		</div>
 	</div>
 	<script>
+		//=============================
+		// DOM FUNCS
+		//=============================
+
 		//le fake jquery
 		function $(query){
 			const results = document.querySelectorAll(query)
@@ -36,18 +62,59 @@
 		function renderList(items){
 			const ul = $('#movie-list')
 			ul.innerHTML = ''
-			items.forEach(({title, id}) => {
+			items.forEach(({title, year}) => {
 				const li = document.createElement('li')
 				li.className = 'ma2 pa2 pointer hover-bg-light-blue'
-				li.innerHTML = `${title}`
-				li.dataset.id = id
+				li.innerHTML = `${title} (${year})`
+				li.dataset.title = title
 				ul.appendChild(li)			
 			})
 		}
 
-		function searchMovies(movies, text){
+		function showMovie(movie){
+			if(!movie) return
+
+			$('#movie-container').classList.remove('dn')
+			$('#list-container').classList.add('dn')
+			$('#search-text').classList.add('dn')
+
+			$('#movie-title').innerHTML = movie.title
+			$('#movie-rating').innerHTML = movie.imdbRating + '/10'
+			$('#movie-genres').innerHTML = movie.genres.join(', ')
+			$('#movie-cast').innerHTML = movie.actors.join(', ')
+			$('#movie-year').innerHTML = movie.year
+
+		}
+		
+		function hideMovie(){
+			$('#movie-container').classList.add('dn')
+			$('#list-container').classList.remove('dn')
+			$('#search-text').classList.remove('dn')
+		}
+
+		function showImageLoader(){
+			$('#movie-poster').src = './spinner.svg'
+		}
+
+		function updatePosterUrl(url){
+			$('#movie-poster').src = url
+		}
+
+		function showSpinner(){
+			$('#spinner').classList.remove('o-0')
+		}
+		function hideSpinner(){
+			$('#spinner').classList.add('o-0')
+		}
+
+		//=============================
+		// THE PUREST OF FUNCS
+		//=============================
+
+		const searchMovies = (movies, text) => {
+			if(text === '') return []
 			text = text.toLowerCase()
-			let results =  movies.filter(m => {
+			return movies.filter(m => {
 				if(m.title.toLowerCase().startsWith(text))
 					return true
 				for(let actor of m.actors){
@@ -56,15 +123,11 @@
 				}
 				return false
 			})
-			results = (results.length > 0)?  results:  [{title: 'No  results...', id: 0}]
-			return results 
 		}
 
-		const showSpinner = () => $('#spinner').classList.remove('o-0')
-		const hideSpinner = () => $('#spinner').classList.add('o-0')
-		const clearTextInput = () => $('#item-text').value = ''
-		const nonEmpty = x => x.length > 0
-		const getText = () => $('#item-text').value
+		const getMovie = (movies, title) => movies.filter(m =>  
+			m.title.toLowerCase() == title.toLowerCase()
+		)[0]
 	</script>
 	<script src="./movies-bacon.js"></script>
 </body>
