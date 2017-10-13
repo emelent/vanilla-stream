@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" href="./css/tachyons.min.css">
+	<script src="./js/Bacon.js"></script>
+	<style>
+		.ma-auto{margin:auto;}
+		.todo-list{
+			min-height: 250px;
+		}
+	</style>
+</head>
+<body class="avenir">
+	<div class="absolute left-0 right-0 tc ma-auto w-80 pa2">
+		<div class="pv4 f2">Worst Todo</div>
+		<input class="w-70 pa2 avenir bw1 b--solid b--light-gray" placeholder="Task to do" id="item-text" type="text">
+		<button class="gray ttl pa2 ph4 bg-light-gray bw1 br0 b--solid b--transparent"  id="add-button">Add</button>
+		
+		<div class="ma2 mt5 todo-list pa0 bw1 b--solid b--black br1  pa2 tl">
+			<div class=" f3 tl">Things To do</div>
+			<ul class="" id="items-list">
+				<li class="ma2 pa2 pointer hover-bg-washed-red">Fake Item 1</li>
+				<li class="ma2 pa2 pointer hover-bg-washed-red">Fake Item 2</li>
+				<li class="ma2 pa2 pointer hover-bg-washed-red">Fake Item 3</li>
+			</ul>
+		</div>	
+		
+	</div>
+	<script>
+		//Base Code
+		
+		//le fake jquery
+		function $(query){
+			const results = document.querySelectorAll(query)
+			return (results.length > 1)? results:results[0]
+		}
+
+		function renderList(items){
+			const ul = $('#items-list')
+			ul.innerHTML = ''
+			items.forEach(({text, id}) => {
+				const li = document.createElement('li')
+				li.className = 'ma2 pa2 pointer hover-bg-washed-red'
+				li.innerHTML = `${text}`
+				li.dataset.id = id
+				ul.appendChild(li)			
+			})
+		}
+
+		function clearTextInput(){
+			$('#item-text').value = ''
+			setDisabled($('#add-button'), true)
+		}
+		function setDisabled(btn, val){
+			btn.disabled = val
+			if(val){
+				btn.classList.replace('black', 'gray')
+				// btn.classList.replace('b--black', 'b--transparent')
+				// btn.classList.replace('bg-green', 'bg-light-gray')
+				btn.classList.remove('pointer')
+			}else{
+				btn.classList.replace('gray', 'black')
+				// btn.classList.replace('b--transparent', 'b--black')
+				// btn.classList.replace('bg-light-gray', 'bg-green')
+				btn.classList.add('pointer')
+			}
+		}
+		const createItem = text => ({id: randomId(), text})
+		const randomId = () => new Date().getTime() + Math.floor(Math.random() * 100)
+		const nonEmpty = x => x.length > 0
+		const getText = () => $('#item-text').value
+	</script>
+	<script src="./js/todo-bacon.js"></script>
+</body>
+</html>
