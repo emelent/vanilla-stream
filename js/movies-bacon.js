@@ -26,9 +26,9 @@ const onSelectedMovie  = onListClick.map(e => e.target.dataset.title)
 
 // search movies reducer
 const searchMoviesReducer = (state, text) => Object.assign({}, state, {
-		results: searchMovies(state.movies, text),
-		currentMovie: null //set current movie to null every time search is performed
-	})
+	results: searchMovies(state.movies, text),
+	currentMovie: null //set current movie to null every time search is performed
+})
 
 // load movies reducer
 const onLoadMoviesReducer = (state, movies) => Object.assign({}, state, {movies})
