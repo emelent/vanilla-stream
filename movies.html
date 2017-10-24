@@ -115,10 +115,10 @@
 			if(text === '') return []
 			text = text.toLowerCase()
 			return movies.filter(m => {
-				if(m.title.toLowerCase().startsWith(text))
+				if(m.title.toLowerCase().indexOf(text) > -1)
 					return true
 				for(let actor of m.actors){
-					if(actor.toLowerCase().startsWith(text))
+					if(actor.toLowerCase().indexOf(text) > -1)
 						return true
 				}
 				return false
